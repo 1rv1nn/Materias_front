@@ -5,30 +5,20 @@ import './Home.css'
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false)
-  const [reviews, setReviews] = useState([])
   
   const subjects = [
-    'Algoritmos', 
-    'Estructuras de Datos', 
-    'Base de Datos', 
-    'Programación Orientada a Objetos',
+    'Algoritmos',
     'Redes de Computadoras',
     'Inteligencia Artificial',
     'Sistemas Operativos',
-    'Ingeniería de Software'
+    'Ingeniería de Software',
+    'Estructuras Discretas'
   ]
 
   const handleAddReview = (reviewData) => {
-    const newReview = {
-      id: Date.now(),
-      ...reviewData,
-      date: new Date().toLocaleDateString()
-    }
-    setReviews([newReview, ...reviews])
+    console.log('Reseña agregada:', reviewData)
     setShowForm(false)
-    
-    // Mostrar mensaje de éxito (opcional)
-    alert('¡Reseña publicada con éxito!')
+    alert('¡Reseña publicada con éxito! 🎉')
   }
 
   const handleCancel = () => {
@@ -38,17 +28,19 @@ const Home = () => {
   return (
     <div className="home-container">
       <header className="header">
-        <h1>Reseñas de Materias - Ciencias de la Computación</h1>
-        <p>Comparte tu experiencia con las materias de la carrera</p>
+        <h1>Reseña tu materia</h1>
+        <p>Comparte tu experiencia con los demás</p>
       </header>
       
       <main className="main-content">
         {!showForm ? (
           <div className="add-review-section">
-            <Button 
-              text="Añadir Reseña" 
-              onClick={() => setShowForm(true)} 
-            />
+            <button 
+              className="add-review-button"
+              onClick={() => setShowForm(true)}
+            >
+              + Añadir Reseña
+            </button>
           </div>
         ) : (
           <div className="form-section">
@@ -64,7 +56,15 @@ const Home = () => {
           </div>
         )}
         
-        {/* Se ha eliminado el ReviewList */}
+        <div className="no-reviews-section">
+          <div className="no-reviews-content">
+            <div className="no-reviews-icon">📝</div>
+            <h2 className="no-reviews-title">No se encuentra ninguna reseña</h2>
+            <p className="no-reviews-description">
+              Sé el primero en compartir tu experiencia y ayudar a otros estudiantes
+            </p>
+          </div>
+        </div>
       </main>
     </div>
   )
