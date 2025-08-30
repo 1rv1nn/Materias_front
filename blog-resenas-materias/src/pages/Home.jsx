@@ -1,22 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '../components/Button/Button'
 import ReviewForm from '../components/ReviewForm/ReviewForm'
 import './Home.css'
+import { API_URL } from '../config'
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false)
-  
-  const subjects = [
-    'Algoritmos',
-    'Redes de Computadoras',
-    'Inteligencia Artificial',
-    'Sistemas Operativos',
-    'Ingeniería de Software',
-    'Estructuras Discretas'
-  ]
+  const [subjects, setSubjects] = useState([])
+  const [reviews, setReviews] = useState([])
+
+  useEffect(() => {
+    fetch(`${API_URL}/v0/subjects`)
+      .then(res => res.json())
+      .then(data => setSubjects(data))
+      .catch(() => setSubjects([]))
+
+    fetch(`${API_URL}/v0/reviews`)
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.slice().sort((a, b) => b.id - a.id)
+        setReviews(sorted)
+      })
+      .catch(() => setReviews([]))
+  }, [])
 
   const handleAddReview = (reviewData) => {
-    console.log('Reseña agregada:', reviewData)
+    setReviews([reviewData, ...reviews])
     setShowForm(false)
     alert('¡Reseña publicada con éxito! 🎉')
   }
@@ -45,7 +54,7 @@ const Home = () => {
         ) : (
           <div className="form-section">
             <ReviewForm 
-              subjects={subjects} 
+              subjects={subjects.map(s => s.nombre)} 
               onSubmit={handleAddReview}
             />
             <Button 
@@ -55,16 +64,32 @@ const Home = () => {
             />
           </div>
         )}
-        
-        <div className="no-reviews-section">
-          <div className="no-reviews-content">
-            <div className="no-reviews-icon">📝</div>
-            <h2 className="no-reviews-title">No se encuentra ninguna reseña</h2>
-            <p className="no-reviews-description">
-              Sé el primero en compartir tu experiencia y ayudar a otros estudiantes
-            </p>
+
+        {reviews.length === 0 ? (
+          <div className="no-reviews-section">
+            <div className="no-reviews-content">
+              <div className="no-reviews-icon">📝</div>
+              <h2 className="no-reviews-title">No se encuentra ninguna reseña</h2>
+              <p className="no-reviews-description">
+                Sé el primero en compartir tu experiencia y ayudar a otros estudiantes
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="reviews-section">
+            <div className="reviews-content">
+              <div className="reviews-title">Reseñas recientes</div>
+                <ul className="reviews-list">
+                  {reviews.map((r, i) => (
+                    <li key={i} className="review-item">
+                      <div className="review-subject">{r.materia}</div>
+                      <div className="review-text">{r.resena}</div>
+                    </li>
+                  ))}
+                </ul>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )

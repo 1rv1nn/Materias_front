@@ -1,3 +1,16 @@
+beforeAll(() => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve([]),
+      ok: true
+    })
+  )
+})
+
+jest.mock('../config', () => ({
+  API_URL: 'http://localhost:5000'
+}))
+
 import { render, screen, fireEvent } from '@testing-library/react'
 import Home from './Home'
 

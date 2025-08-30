@@ -1,3 +1,21 @@
+beforeAll(() => {
+  window.alert = jest.fn()
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({
+        id: 1,
+        materia: 'Algoritmos',
+        resena: 'Excelente materia, muy retadora pero gratificante.'
+      })
+    })
+  )
+})
+
+jest.mock('../../config', () => ({
+  API_URL: 'http://localhost:5000'
+}))
+
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ReviewForm from './ReviewForm'
@@ -63,10 +81,12 @@ describe('ReviewForm Component', () => {
     const submitButton = screen.getByRole('button', { name: /publicar reseña/i })
     await user.click(submitButton)
     
-    expect(mockOnSubmit).toHaveBeenCalledWith({
-      subject: 'Algoritmos',
-      review: reviewText
-    })
+    expect(mockOnSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        materia: 'Algoritmos',
+        resena: reviewText
+      })
+    )
   })
 
   test('does not submit form with empty fields', async () => {
