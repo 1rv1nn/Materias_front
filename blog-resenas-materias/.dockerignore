@@ -7,3 +7,7 @@ dist
 README.md
 Dockerfile
 .dockerignore
+*.log
+coverage
+.vscode
+.idea

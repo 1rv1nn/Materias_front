@@ -1,20 +1,46 @@
-# Usar una imagen oficial de Node.js con la versión LTS
-FROM node:18-alpine
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
 
-# Establecer el directorio de trabajo en el contenedor
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de configuración del package.json y package-lock.json
+# Copiar archivos de configuración de dependencias
 COPY package*.json ./
+COPY vite.config.js ./
+COPY jest.config.cjs ./
+COPY babel.config.cjs ./
 
-# Instalar las dependencias
+# Instalar todas las dependencias (incluyendo devDependencies)
 RUN npm install
 
-# Copiar el resto del código de la aplicación
+# Copiar el código fuente
 COPY . .
 
-# Exponer el puerto que usa Vite (por defecto 5173)
-EXPOSE 5173
+# Construir la aplicación
+RUN npm run build
 
-# Comando para ejecutar la aplicación en modo desarrollo
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Stage 2: Production stage
+FROM node:18-alpine AS production
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar los artefactos de build y archivos de configuración
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/ecosystem.config.js ./
+
+# Instalar PM2 y serve globalmente
+RUN npm install -g pm2 serve
+
+# Exponer el puerto
+EXPOSE 3000
+
+# Salud de la aplicación
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+
+# Usar un usuario no root por seguridad
+USER node
+
+# Iniciar la aplicación con PM2
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
