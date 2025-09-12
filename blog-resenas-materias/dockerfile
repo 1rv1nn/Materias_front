@@ -25,8 +25,10 @@ FROM node:18-alpine AS production
 # Establecer el directorio de trabajo e instalar dependencias
 WORKDIR /app
 
-# Instalar supervisor y otras dependencias necesarias
-RUN apk add --no-cache supervisor && \
+# Crear usuario appuser y instalar supervisor y otras dependencias necesarias
+RUN addgroup -g 1001 -S appuser && \
+    adduser -S appuser -G appuser -u 1001 && \
+    apk add --no-cache supervisor && \
     mkdir -p /var/log/supervisor && \
     npm install -g pm2 serve
 
@@ -41,7 +43,9 @@ RUN chmod +x /app/start-pm2.sh
 RUN mkdir -p /var/log/supervisor /var/run && \
     chmod -R 755 /var/log/supervisor && \
     chmod -R 755 /var/run && \
-    chown -R node:node /app
+    chown -R appuser:appuser /app && \
+    chown -R appuser:appuser /var/log/supervisor && \
+    chown -R appuser:appuser /var/run
 
 # Exponer el puerto
 EXPOSE 3000
@@ -50,5 +54,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-# Iniciar supervisor (mantenemos root para supervisor)
+# Cambiar al usuario appuser e iniciar supervisor
+USER appuser
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
