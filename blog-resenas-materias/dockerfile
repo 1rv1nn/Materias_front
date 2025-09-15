@@ -4,6 +4,10 @@ FROM node:18-alpine AS builder
 # Establecer el directorio de trabajo
 WORKDIR /app
 
+# Definir argumentos de build para variables de entorno de Vite
+ARG VITE_API_URL=http://localhost:8000
+ENV VITE_API_URL=${VITE_API_URL}
+
 # Copiar archivos de configuración de dependencias
 COPY package*.json ./
 COPY vite.config.js ./
