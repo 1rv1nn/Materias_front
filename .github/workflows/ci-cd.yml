@@ -18,6 +18,10 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     
+    defaults:
+      run:
+        working-directory: ./blog-resenas-materias
+    
     steps:
       # Configurar el entorno
       - name: Checkout code
@@ -28,6 +32,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: './blog-resenas-materias/package-lock.json'
       
       # Instalar dependencias
       - name: Install dependencies
@@ -47,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage/
+          path: ./blog-resenas-materias/coverage/
 
   # Job build-and-push: solo se ejecuta si el job de test fue exitoso
   build-and-push:
@@ -92,8 +97,8 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./dockerfile
+          context: ./blog-resenas-materias
+          file: ./blog-resenas-materias/dockerfile
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -105,8 +110,8 @@ jobs:
       - name: Push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./dockerfile
+          context: ./blog-resenas-materias
+          file: ./blog-resenas-materias/dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
