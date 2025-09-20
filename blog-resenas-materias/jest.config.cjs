@@ -6,5 +6,13 @@ module.exports = {
   },
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest'
-  }
+  },
+  collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!src/main.jsx',
+    '!src/setupTests.js'
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html']
 }

@@ -1,3 +1,10 @@
+import { render, screen, fireEvent } from '@testing-library/react'
+import Home from './Home'
+
+jest.mock('../config', () => ({
+  API_URL: 'http://localhost:5000'
+}))
+
 beforeAll(() => {
   global.fetch = jest.fn(() =>
     Promise.resolve({
@@ -6,13 +13,6 @@ beforeAll(() => {
     })
   )
 })
-
-jest.mock('../config', () => ({
-  API_URL: 'http://localhost:5000'
-}))
-
-import { render, screen, fireEvent } from '@testing-library/react'
-import Home from './Home'
 
 describe('Home Page', () => {
   test('displays button to add review', () => {

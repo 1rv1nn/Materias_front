@@ -1,3 +1,11 @@
+import { render, screen, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import ReviewForm from './ReviewForm'
+
+jest.mock('../../config', () => ({
+  API_URL: 'http://localhost:5000'
+}))
+
 beforeAll(() => {
   window.alert = jest.fn()
   global.fetch = jest.fn(() =>
@@ -11,14 +19,6 @@ beforeAll(() => {
     })
   )
 })
-
-jest.mock('../../config', () => ({
-  API_URL: 'http://localhost:5000'
-}))
-
-import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import ReviewForm from './ReviewForm'
 
 describe('ReviewForm Component', () => {
   const mockSubjects = ['Algoritmos', 'Estructuras de Datos', 'Base de Datos']
