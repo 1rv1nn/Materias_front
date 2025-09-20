@@ -56,6 +56,7 @@ jobs:
         with:
           name: coverage-report
           path: coverage/
+          if-no-files-found: warn
 
   # Job build-and-push: solo se ejecuta si el job de test fue exitoso
   build-and-push:

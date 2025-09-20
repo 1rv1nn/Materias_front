@@ -7,12 +7,18 @@ module.exports = {
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest'
   },
-  collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!src/main.jsx',
     '!src/setupTests.js'
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html']
+  coverageReporters: ['text', 'lcov', 'html'],
+  globals: {
+    'import.meta': {
+      env: {
+        VITE_API_URL: 'http://localhost:5000'
+      }
+    }
+  }
 }

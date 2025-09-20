@@ -2,22 +2,26 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ReviewForm from './ReviewForm'
 
+// Mock the config module
 jest.mock('../../config', () => ({
   API_URL: 'http://localhost:5000'
 }))
 
-beforeAll(() => {
-  window.alert = jest.fn()
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve({
-        id: 1,
-        materia: 'Algoritmos',
-        resena: 'Excelente materia, muy retadora pero gratificante.'
-      })
+// Mock global functions
+global.fetch = jest.fn()
+global.alert = jest.fn()
+
+beforeEach(() => {
+  fetch.mockClear()
+  alert.mockClear()
+  fetch.mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      id: 1,
+      materia: 'Algoritmos',
+      resena: 'Excelente materia, muy retadora pero gratificante.'
     })
-  )
+  })
 })
 
 describe('ReviewForm Component', () => {
