@@ -1,1 +1,2 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+// Simple config that works with both Vite and Jest
+export const API_URL = 'http://localhost:5000'

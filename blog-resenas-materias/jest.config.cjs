@@ -14,11 +14,7 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  globals: {
-    'import.meta': {
-      env: {
-        VITE_API_URL: 'http://localhost:5000'
-      }
-    }
-  }
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*\\.mjs$))'
+  ]
 }

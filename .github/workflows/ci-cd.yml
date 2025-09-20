@@ -47,10 +47,20 @@ jobs:
       - name: Run unit tests
         run: |
           npm test -- --coverage --watchAll=false --passWithNoTests
+          # Ensure coverage directory exists
+          mkdir -p coverage || true
       
       # Ejecución de pruebas de instalación (verificar que el build funciona)
       - name: Run build test
         run: npm run build
+      
+      # Lista archivos de coverage para debug
+      - name: List coverage files
+        if: always()
+        run: |
+          echo "Listing coverage directory contents:"
+          ls -la coverage/ || echo "No coverage directory found"
+          find . -name "coverage" -type d || echo "No coverage directories found"
       
       # Opcional: subir resultados de coverage
       - name: Upload coverage reports
