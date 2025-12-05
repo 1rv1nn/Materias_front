@@ -118,7 +118,7 @@ jobs:
           REPOSITORY: ${{ vars.ECR_REPO_NAME }}
           IMAGE_TAG: frontend-${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./blog-resenas-materias
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:frontend-latest
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:frontend-latest
@@ -234,4 +234,3 @@ jobs:
           
           # Clean up SSH key
           rm -f private_key.pem
-          
