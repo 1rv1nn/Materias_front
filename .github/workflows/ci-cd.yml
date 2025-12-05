@@ -225,7 +225,7 @@ jobs:
               --name materias-front \
               --restart unless-stopped \
               -p 80:3000 \
-              -e VITE_API_URL=${{ secrets.BACKEND_URL }} \
+              -e VITE_API_URL=http://ing-soft-2-alb-997050868.us-east-1.elb.amazonaws.com \
               ${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
             
             # Clean up old images
