@@ -202,7 +202,7 @@ jobs:
           IMAGE_TAG: frontend-${{ github.sha }}
           EC2_HOST: ${{ secrets.EC2_FRONT_HOST }}
           EC2_USER: ec2-user
-          EC2_SSH_KEY: ${{ secrets.EC2_FRONT_SSH_KEY }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           # Save SSH key to file
           printf '%s\n' "$EC2_SSH_KEY" > private_key.pem
@@ -225,6 +225,7 @@ jobs:
               --name materias-front \
               --restart unless-stopped \
               -p 80:3000 \
+              -e VITE_API_URL=${{ secrets.BACKEND_URL }} \
               ${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
             
             # Clean up old images
