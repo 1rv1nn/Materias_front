@@ -118,7 +118,7 @@ jobs:
           REPOSITORY: ${{ vars.ECR_REPO_NAME }}
           IMAGE_TAG: frontend-${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./blog-resenas-materias
+          docker build --build-arg VITE_API_URL=http://ing-soft-2-alb-997050868.us-east-1.elb.amazonaws.com -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./blog-resenas-materias
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:frontend-latest
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:frontend-latest
@@ -225,7 +225,6 @@ jobs:
               --name materias-front \
               --restart unless-stopped \
               -p 80:3000 \
-              -e VITE_API_URL=http://ing-soft-2-alb-997050868.us-east-1.elb.amazonaws.com \
               ${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
             
             # Clean up old images
